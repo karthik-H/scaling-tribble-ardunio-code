@@ -1,0 +1,52 @@
+{
+  "breakdowns": [
+    {
+      "id": "sensor_data_acquisition",
+      "header": "Sensor Data Acquisition",
+      "description": "Reads analog sensor data from GPIO 34 at regular intervals.",
+      "conditions": [
+        "Source: Analog input pin GPIO 34",
+        "Sampling Interval: Every 5 seconds",
+        "Validation: Value range 0 to 4095 (12-bit resolution)",
+        "Invalid readings must be handled (logged or ignored)"
+      ]
+    },
+    {
+      "id": "device_identity_and_key_generation",
+      "header": "Device Identity and Key Generation",
+      "description": "Generates a unique device_id and a private hash key at runtime using the ESP32 MAC address.",
+      "conditions": [
+        "Device identity is derived from ESP32 MAC address",
+        "Key generation uses SHA-256 algorithm",
+        "Key is stored in-memory only (no hardcoded secrets)",
+        "Key is generated at runtime during initialization"
+      ]
+    },
+    {
+      "id": "data_signing_and_payload_assembly",
+      "header": "Data Signing and Payload Assembly",
+      "description": "Signs sensor data using HMAC-SHA256 and assembles the telemetry payload.",
+      "conditions": [
+        "Signing algorithm: HMAC-SHA256",
+        "Key: Runtime-derived private hash key",
+        "Payload structure includes device_id, timestamp (epoch seconds), sensor_value (integer), and signature (hex encoded HMAC)"
+      ]
+    },
+    {
+      "id": "secure_data_transmission",
+      "header": "Secure Data Transmission",
+      "description": "Transmits signed telemetry payload over HTTPS using WiFi in station mode.",
+      "conditions": [
+        "Network: WiFi (station mode)",
+        "Protocol: HTTPS (TLS/SSL)",
+        "Method: HTTP POST",
+        "Endpoint: https://api.example-iot.com:8443/v1/telemetry/stream",
+        "Port: 8443",
+        "Content-Type: application/json",
+        "Basic connection retry logic for error handling"
+      ]
+    }
+  ],
+  "last_updated": "2025-12-24T07:20:12.925227",
+  "version": "1.0"
+}
